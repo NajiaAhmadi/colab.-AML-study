@@ -2,8 +2,8 @@ library(readr)
 library(readxl)
 library(dplyr)
 
-
-file_path <- "/Users/ahmadinai/Documents/GitHub/colab.\ AML\ study/Data/20240112_sal_ohsu_data.xlsx"
+# original dataset
+file_path <- "20240112_sal_ohsu_data.xlsx"
 
 aml_df = read_excel(file_path, na = "NA")
 
@@ -20,7 +20,6 @@ calculate_OS2years <- function(OSTM, OSSTAT) {
   }
 }
 
-
 aml_df <- aml_df %>% mutate(OS2Years = mapply(calculate_OS2years, OSTM, OSSTAT))
 
 # OSTM < 2 years, OSSTAT = 0 -> patient has been censored within the first two years,
@@ -31,7 +30,5 @@ aml_df_OS2years<- aml_df %>%
   filter(!is.na(OS2Years)) %>% 
   select(-c(AGEGRP, "Sex male", "sex female", CGKT)) 
 
-#names(aml_df)
-
-
-write.csv(aml_df_OS2years, "/Users/ahmadinai/Documents/GitHub/colab.\ AML\ study/AML\ study/20240116_sal_ohsu_data_OS2.csv", row.names = TRUE)
+# write it in a .CSV file
+write.csv(aml_df_OS2years, "20240116_sal_ohsu_data_OS2.csv", row.names = TRUE)
