@@ -47,7 +47,6 @@ RF_lrn = lrn("classif.ranger",
              #mtry = as.integer(sqrt(length(task_cr$feature_names)))
              )
 
-
 RF_tuner = auto_tuner(
   tuner = tnr("random_search"),
   learner = RF_lrn,
@@ -70,15 +69,15 @@ RF_class$train(task_cr, row_ids = train_set_cr)
 RF_pred_train = RF_class$predict(task_cr, row_ids = train_set_cr)
 RF_pred_test = RF_class$predict(task_cr, row_ids=test_set_cr)
 
-RF_pred_train$confusion
-RF_pred_test$confusion
-RF_pred_train$score(measures)
+#RF_pred_train$confusion
+#RF_pred_test$confusion
+#RF_pred_train$score(measures)
 RF_pred_test$score(measures)
-RF_pred_test$prob
-RF_pred_train$response
+#RF_pred_test$prob
+#RF_pred_train$response
 
 # imporant features 
-variab_filter = flt("importance", learner = learner1)
+variab_filter = flt("importance", learner = RF_lrn)
 variab_filter$calculate(task_cr)
 head(as.data.table(variab_filter), 10)
 

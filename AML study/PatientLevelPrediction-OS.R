@@ -77,7 +77,7 @@ RF_pred_test$prob
 RF_pred_train$response
 
 # imporant features 
-variab_filter = flt("importance", learner = learner1)
+variab_filter = flt("importance", learner = RF_class)
 variab_filter$calculate(task_os)
 head(as.data.table(variab_filter), 10)
 
@@ -155,6 +155,8 @@ print_model_performance("Random Forest", RF_pred_train, RF_pred_test, measures)
 print_model_performance("Decision Tree", tree_pred_train, tree_pred_test, measures)
 print_model_performance("Gradient Boosting", gboost_pred_train, gboost_pred_test, measures)
 print_model_performance("Support-Vector Machines", svm_pred_train, svm_pred_test, measures)
+
+
 
 
 
