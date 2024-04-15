@@ -11,12 +11,11 @@ library(xgboost)
 cohort <- read.csv("final_cohort.csv")
 
 # Cohort: Overall survival >= two years
-cohort_os <- cohort %>% select(-c(X4156363, 
-                                  X37208123,
-                                  X35948202, 
-                                  X4156363, 
-                                  X40483363,
-                                  X40482950,
+cohort_os <- cohort %>% select(-c(X4156363,  #EFSSTAT, RFSSTAT
+                                  X37208123, #EFSTM
+                                  X40483363, #RFSTM
+                                  X40482950, #OSTM
+                                  X4014046,  #CR1
                                   person_id))
 
 # target column as factor

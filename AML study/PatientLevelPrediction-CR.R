@@ -11,13 +11,11 @@ library(xgboost)
 cohort <- read.csv("final_cohort.csv")
 
 # Cohort: Complete remission
-cohort_cr <- cohort %>% select(-c(X4156363, 
-                                  X37208123,
-                                  X35948202, 
-                                  X4156363, 
-                                  X40483363,
-                                  X44804077,
-                                  X40482950,
+cohort_cr <- cohort %>% select(-c(X4156363,  #EFSSTAT, RFSSTAT
+                                  X37208123, #EFSTM
+                                  X40483363, #RFSTM
+                                  X44804077, #OSSTAT2Years
+                                  X40482950, #OSTM
                                   person_id))
 
 # target column as factor
