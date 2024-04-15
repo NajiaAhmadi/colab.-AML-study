@@ -37,6 +37,9 @@ inner_cv3 = rsmp("cv", folds = 3)
 
 ### MODEL: Random Forest
 
+fselector = fs("random_search")
+measure = msr("classif.prauc")
+
 # hyperparameter
 RF_lrn = lrn("classif.ranger", 
              predict_type = "prob", 
@@ -53,6 +56,8 @@ RF_tuner = auto_tuner(
   search_space = ps(num.trees = p_int(500,2000)),
   terminator = terminator
 )
+
+
 
 RF_class = AutoFSelector$new(
   learner = RF_tuner,
@@ -127,9 +132,9 @@ gboost_pred_test$score(measures)
 
 ### MODEL: Support-Vector machines
 svm_lrn = lrn("classif.svm", predict_type = "prob")
-svm_lrn$train(task_os, row_ids = train_set_cr)
-svm_pred_train = svm_lrn$predict(task_os, row_ids=train_set_cr)
-svm_pred_test = svm_lrn$predict(task_os, row_ids=train_set_cr)
+svm_lrn$train(task_cr, row_ids = train_set_cr)
+svm_pred_train = svm_lrn$predict(task_cr, row_ids=train_set_cr)
+svm_pred_test = svm_lrn$predict(task_cr, row_ids=test_set_cr)
 
 svm_pred_train$confusion
 svm_pred_test$confusion

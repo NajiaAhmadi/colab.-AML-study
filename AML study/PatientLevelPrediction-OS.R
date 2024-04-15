@@ -34,6 +34,9 @@ measures = msrs(c('classif.acc','classif.auc', "classif.prauc", "classif.bbrier"
 terminator = trm("evals", n_evals = 5)
 inner_cv3 = rsmp("cv", folds = 3)
 
+fselector = fs("random_search")
+measure = msr("classif.prauc")
+
 
 ### MODEL: Random Forest
 
