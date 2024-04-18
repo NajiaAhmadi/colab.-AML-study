@@ -18,6 +18,8 @@ tryCatch({
   con <- dbConnect(RPostgres::Postgres(), dbname = db, host = host_db,
                    port = db_port, user = db_user, password = db_password)
   
+  dbExecute(con, "TRUNCATE TABLE cds_cdm_02.observation;")
+  
   ParallelLogger::logInfo("Connected to the database successfully.")
 }, error = function(e) {
   ParallelLogger::logError("Error connecting to the database:", conditionMessage(e))
@@ -106,12 +108,12 @@ if (any(is.na(vertical_table))) {
 } else {
   cat("No NAs found in the updated vertical_table.\n")
 }
-#---------------------------------------------------- OMOP measurement table filling
+#---------------------------------------------------- OMOP observation table filling
 
 # query the patient ids from person table
 get_person_id <- function(con, patient_id) {
   query <- glue::glue("
-    SELECT person_id FROM cds_cdm.person WHERE person_source_value = '{patient_id}';
+    SELECT person_id FROM cds_cdm_02.person WHERE person_source_value = '{patient_id}';
   ")
   result <- dbGetQuery(con, as.character(query))
   
@@ -136,7 +138,7 @@ for (i in 1:nrow(vertical_table)) {
   value_as_number <- vertical_table$Value[i]
   
   query <- glue::glue("
-    INSERT INTO cds_cdm.observation (
+    INSERT INTO cds_cdm_02.observation (
       person_id, observation_concept_id, observation_date, 
       observation_type_concept_id, observation_source_value,
       value_as_number
@@ -151,7 +153,7 @@ for (i in 1:nrow(vertical_table)) {
 }
 
 dbDisconnect(con)
-cat("Measurement data inserted into cds_cdm.observation table.\n")
+cat("Measurement data inserted into cds_cdm_02.observation table.\n")
 
 
 

@@ -112,7 +112,7 @@ print(vertical_table_Measurement_nonBinary)
 # query the patient ids from person table
 get_person_id <- function(con, patient_id) {
   query <- glue::glue("
-    SELECT person_id FROM cds_cdm.person WHERE person_source_value = '{patient_id}';
+    SELECT person_id FROM cds_cdm_02.person WHERE person_source_value = '{patient_id}';
   ")
   result <- dbGetQuery(con, as.character(query))
   
@@ -140,7 +140,7 @@ for (i in 1:nrow(vertical_table_Measurement_nonBinary)) {
   unit_concept_id <- vertical_table_Measurement_nonBinary$unit_concept_id[i]
   
   query <- glue::glue("
-    INSERT INTO cds_cdm.measurement (
+    INSERT INTO cds_cdm_02.measurement (
       person_id, measurement_concept_id, measurement_date, 
       measurement_type_concept_id, measurement_source_value,
       value_source_value, unit_source_value, unit_concept_id
@@ -155,7 +155,9 @@ for (i in 1:nrow(vertical_table_Measurement_nonBinary)) {
 }
 
 dbDisconnect(con)
-cat("Measurement data inserted into cds_cdm.measurement table.\n")
+cat("Measurement data inserted into cds_cdm_02.measurement table.\n")
+
+
 
 
 
@@ -217,7 +219,7 @@ print(vertical_table_Measurement_nonBinary_string)
 # query the patient ids from person table
 get_person_id <- function(con, patient_id) {
   query <- glue::glue("
-    SELECT person_id FROM cds_cdm.person WHERE person_source_value = '{patient_id}';
+    SELECT person_id FROM cds_cdm_02.person WHERE person_source_value = '{patient_id}';
   ")
   result <- dbGetQuery(con, as.character(query))
   
@@ -239,8 +241,8 @@ for (i in 1:nrow(vertical_table_Measurement_nonBinary_string)) {
   value_source_value1 <- vertical_table_Measurement_nonBinary_string$Value[i]
   
   query <- glue::glue("
-    INSERT INTO cds_cdm.measurement (
-      person_id, measurement_concept_id, measurement_date, 
+    INSERT INTO cds_cdm_02.measurement (
+      person_id, measurement_concept_id, measurement_date,
       measurement_type_concept_id, measurement_source_value,
       value_source_value
     )
@@ -254,7 +256,7 @@ for (i in 1:nrow(vertical_table_Measurement_nonBinary_string)) {
 }
 
 dbDisconnect(con)
-cat("Measurement data inserted into cds_cdm.measurement table.\n")
+cat("Measurement data inserted into cds_cdm_02.measurement table.\n")
 
 
 
