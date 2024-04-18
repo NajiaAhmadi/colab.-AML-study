@@ -42,7 +42,8 @@ measure = msr("classif.prauc")
 
 # hyperparameter
 RF_lrn = lrn("classif.ranger", 
-             predict_type = "prob", 
+             predict_type = "prob",
+             importance = "impurity",
              max.depth = 17, 
              seed = 12345 
              #mtry = as.integer(sqrt(length(task_os$feature_names)))
@@ -88,6 +89,7 @@ head(as.data.table(variab_filter), 10)
 
 tree_lrn = lrn("classif.rpart", 
                predict_type = "prob",
+               importance = "impurity",
                keep_model = TRUE,
                maxcompete = 10, # between 0 and ∞
                maxdepth = 20 # between 1 and 30

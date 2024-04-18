@@ -42,10 +42,11 @@ measure = msr("classif.prauc")
 
 # hyperparameter
 RF_lrn = lrn("classif.ranger", 
+             importance = "impurity",
              predict_type = "prob", 
              max.depth = 17, 
-             seed = 12345 
-             #mtry = as.integer(sqrt(length(task_cr$feature_names)))
+             seed = 12345 ,
+             mtry = as.integer(sqrt(length(task_cr$feature_names)))
              )
 
 RF_tuner = auto_tuner(
