@@ -29,8 +29,8 @@ tryCatch({
 tryCatch({
   dbBegin(con)
   
-  dbExecute(con, "TRUNCATE TABLE cds_cdm.person CASCADE;")
-  dbExecute(con, "TRUNCATE TABLE cds_cdm.observation_period CASCADE;")
+  dbExecute(con, "TRUNCATE TABLE cds_cdm_02.person;")
+  #dbExecute(con, "TRUNCATE TABLE cds_cdm_02.observation_period CASCADE;")
   
   dbCommit(con)
 }, error = function(e) {
@@ -61,7 +61,7 @@ for (i in 1:nrow(input_data)) {
   year_of_birth <- current_year - age
   
   insert_person_query <- glue::glue("
-  INSERT INTO cds_cdm.person (gender_concept_id, gender_source_value, year_of_birth, person_source_value)
+  INSERT INTO cds_cdm_02.person (gender_concept_id, gender_source_value, year_of_birth, person_source_value)
   VALUES ({as.numeric(gender_concept_id)}, '{gender_value}', {year_of_birth}, '{patient_id}');
 ")
   
@@ -70,3 +70,4 @@ for (i in 1:nrow(input_data)) {
 
 dbDisconnect(con)
 cat("Person table populated with patient information.\n")
+

@@ -18,6 +18,8 @@ tryCatch({
   con <- dbConnect(RPostgres::Postgres(), dbname = db, host = host_db,
                    port = db_port, user = db_user, password = db_password)
   
+  dbExecute(con, "TRUNCATE TABLE cds_cdm_02.measurement;")
+  
   ParallelLogger::logInfo("Connected to the database successfully.")
 }, error = function(e) {
   ParallelLogger::logError("Error connecting to the database:", conditionMessage(e))
@@ -78,6 +80,7 @@ for (i in seq(nrow(vertical_table))) {
 }
 
 print(vertical_table)
+
 #-------------------------------- Check for NAs in the entire vertical_table
 if (any(is.na(vertical_table))) {
   cat("There are NAs in the vertical_table.\n")
@@ -110,7 +113,7 @@ if (any(is.na(vertical_table))) {
 # query the patient ids from person table
 get_person_id <- function(con, patient_id) {
   query <- glue::glue("
-    SELECT person_id FROM cds_cdm.person WHERE person_source_value = '{patient_id}';
+    SELECT person_id FROM cds_cdm_02.person WHERE person_source_value = '{patient_id}';
   ")
   result <- dbGetQuery(con, as.character(query))
   
@@ -140,7 +143,7 @@ for (i in 1:nrow(vertical_table)) {
   #                             ifelse(vertical_table$Value[i] == "1", Yes_concept_id, NULL))
   
   query <- glue::glue("
-    INSERT INTO cds_cdm.measurement (
+    INSERT INTO cds_cdm_02.measurement (
       person_id, measurement_concept_id, measurement_date, 
       measurement_type_concept_id, measurement_source_value,
       value_source_value
@@ -155,7 +158,7 @@ for (i in 1:nrow(vertical_table)) {
 }
 
 dbDisconnect(con)
-cat("Measurement data inserted into cds_cdm.measurement table.\n")
+cat("Measurement data for binary elements inserted into cds_cdm_02.measurement table.\n")
 
 
 
