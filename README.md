@@ -1,5 +1,7 @@
 # Pipeline to standardize and analyze AML patient data in a multi-center study - a binary classifcation problem.
 
+This study utilizes our previously developed pipeline (https://github.com/NajiaAhmadi/colab.-AML-study), automating the Extract, Transform, Load (ETL) processes using the R language to enhance reproducibility.
+
 ### DataPreprocess
 
 This script calculates the overall survival of patients over two years.
