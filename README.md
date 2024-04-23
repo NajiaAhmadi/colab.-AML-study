@@ -1,12 +1,16 @@
 # Pipeline to standardize and analyze AML patient data in a multi-center study - a binary classifcation problem.
 
+### DataPreprocess
+
+This script calculates the overall survival of patients over two years.
+
 ## Install ohdsi-omop-v5
 
-In order to harmonize the data first an OMOP instance is necessary. If you do not have access to an OMOP database please use the following link to get an OMOP instance runnung in your machine.
+To standardize data, an OMOP instance is required. If you do not have access to an OMOP database, please use the following link to set up an OMOP instance on your machine:
 
-installation: https://gitlab.ukdd.de/pub/ohdsi/techstack
+installation Guide: https://gitlab.ukdd.de/pub/ohdsi/techstack
 
-## Use the ETL Routes to write your .CSV file datasets to OMOP CDM in the following order.
+## Use the following scripts to convert your .CSV datasets to the OMOP Common Data Model (CDM) in this specific order:
 
  - ETL-person.R
  - ETL-condition-binary.R		
@@ -17,15 +21,22 @@ installation: https://gitlab.ukdd.de/pub/ohdsi/techstack
 
 ## Cohort definition
 
-Define your cohorts using the cohort defination script.
+Define your cohorts using the provided cohort definition script.
 
 ## Cohort retrieval 
 
-Get the cohort from OMOP CDM to the working directory.
+Retrieve the defined cohort from the OMOP CDM to your working directory.
 
 ## Patient level prediction
 
-Predict Over all Survival in patients in two years using the PatientLevelPrediction-OS.R and the complete remision using PatientLevelPrediction-CR.R script. 
+Predict two-year overall survival and complete remission in patients using the PatientLevelPrediction-OS.R and PatientLevelPrediction-CR.R scripts respectively.
+
+
+
+
+
+
+
 
 
 
