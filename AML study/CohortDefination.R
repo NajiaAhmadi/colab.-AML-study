@@ -1,5 +1,5 @@
 library(DBI)
-#install.packages("RPostgreSQL")
+install.packages("RPostgreSQL")
 library(RPostgreSQL)
 library(glue)
 
@@ -32,11 +32,10 @@ tryCatch({
 })
 
 # truncate the table if necessary (only execute if necessary)
-
 tryCatch({
   dbBegin(con)
   
-  dbExecute(con, "TRUNCATE TABLE cds_cdm.target_cohort CASCADE;")
+  dbExecute(con, "TRUNCATE TABLE cds_cdm_02.target_cohort CASCADE;")
 
   dbCommit(con)
 }, error = function(e) {
@@ -50,7 +49,7 @@ tryCatch({
 # Outcome Cohort 1: get all patients with CR1 = 1
 sql_query_cohort_1 <- "
   SELECT person_id
-  FROM cds_cdm.observation
+  FROM cds_cdm_02.observation
   WHERE observation_source_value = 'CR1'
   AND value_as_number = 1;
 "
@@ -59,7 +58,7 @@ result_cohort_1 <- dbGetQuery(con, sql_query_cohort_1)
 # Outcome Cohort 2: get all patients who survived over two years
 sql_query_cohort_2 <- "
   SELECT person_id
-  FROM cds_cdm.observation
+  FROM cds_cdm_02.observation
   WHERE observation_source_value = 'OSSTAT2Years'
   AND value_as_number = 1;
 "
@@ -68,7 +67,7 @@ result_cohort_2 <- dbGetQuery(con, sql_query_cohort_2)
 # Target population: get all patients with CR1 = 1 and OS2Years = 1
 sql_query_target_population <- "
   SELECT person_id
-  FROM cds_cdm.observation
+  FROM cds_cdm_02.observation
   WHERE observation_source_value IN ('CR1', 'OSSTAT2Years');
 "
 result_target_population <- dbGetQuery(con, sql_query_target_population)
@@ -90,7 +89,7 @@ insert_cohort <- function(con, result_data_frame, cohort_definition_id) {
     cohort_end_date <- result_data_frame$cohort_end_date[i]
     
     insert_cohort_query <- glue::glue("
-      INSERT INTO cds_cdm.target_cohort (cohort_definition_id, subject_id, cohort_start_date, cohort_end_date)
+      INSERT INTO cds_cdm_02.target_cohort (cohort_definition_id, subject_id, cohort_start_date, cohort_end_date)
       VALUES ({cohort_definition_id}, {subject_id}, '{cohort_start_date}'::date, '{cohort_end_date}'::date);
     ")
     
@@ -102,8 +101,6 @@ insert_cohort <- function(con, result_data_frame, cohort_definition_id) {
 insert_cohort(con, result_cohort_1, 1)
 insert_cohort(con, result_cohort_2, 2)
 insert_cohort(con, result_target_population, 3)
-
-
 
 
 

@@ -6,6 +6,7 @@ library(tidyr)
 library(ggplot2)
 library(mlr3learners)
 library(xgboost)
+library(e1071)
 
 # dataset
 cohort <- read.csv("final_cohort.csv")
@@ -82,14 +83,28 @@ RF_pred_train$response
 # imporant features 
 variab_filter = flt("importance", learner = RF_class)
 variab_filter$calculate(task_os)
-head(as.data.table(variab_filter), 10)
+Important_features_OS = head(as.data.table(variab_filter), 15)
+
+
+mapping_sheet <- read_excel("20240122_Mappings_sal.xlsx")
+
+Important_features_OS$Concept_name <- sapply(Important_features_OS$feature, function(feature) {
+  cleaned_feature <- gsub("^X", "", feature)
+  match_idx <- which(mapping_sheet$Concept_id == cleaned_feature)
+  
+  if (length(match_idx) > 0) {
+    return(mapping_sheet$Concept_name[match_idx])
+  } else {
+    return(NA)
+  }
+})
+
 
 ### MODEL:Single classification tree from package rpart.
 #learner2 = lrn("classif.rpart")
 
 tree_lrn = lrn("classif.rpart", 
                predict_type = "prob",
-               importance = "impurity",
                keep_model = TRUE,
                maxcompete = 10, # between 0 and ∞
                maxdepth = 20 # between 1 and 30
@@ -159,7 +174,7 @@ print_model_performance("Random Forest", RF_pred_train, RF_pred_test, measures)
 print_model_performance("Decision Tree", tree_pred_train, tree_pred_test, measures)
 print_model_performance("Gradient Boosting", gboost_pred_train, gboost_pred_test, measures)
 print_model_performance("Support-Vector Machines", svm_pred_train, svm_pred_test, measures)
-
+print(Important_features_OS)
 
 
 

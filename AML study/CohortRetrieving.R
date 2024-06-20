@@ -6,6 +6,7 @@ library(DBI)
 library(RPostgreSQL)
 library(data.table)
 library(impute)
+library(Hmisc)
 
 #-------------------------------------------------------------- Database Connection
 if (!file.exists("config.R")) {
@@ -34,12 +35,12 @@ tryCatch({
 #-------------------------------------------------------------- Get the cohort
  
 # retrieve relevant omop tables
-cohort_CR <- tbl(con, dbplyr::in_schema("cds_cdm", "target_cohort" )) %>% 
+cohort_CR <- tbl(con, dbplyr::in_schema("cds_cdm_02", "target_cohort" )) %>% 
   rename("person_id" = "subject_id") %>% 
   filter(cohort_definition_id == 3) %>% 
   select("person_id") %>% collect()
 
-person <- tbl(con, dbplyr::in_schema("cds_cdm", "person")) %>% collect()
+person <- tbl(con, dbplyr::in_schema("cds_cdm_02", "person")) %>% collect()
 
 final_cohort_CR4 <- cohort_CR %>%
   left_join(person, by = 'person_id') %>% 
@@ -60,7 +61,7 @@ final_cohort_CR4 <- cohort_CR %>%
             race_concept_id,
             person_source_value)) 
 
-condition_occurrence <- tbl(con, dbplyr::in_schema("cds_cdm", "condition_occurrence")) %>% 
+condition_occurrence <- tbl(con, dbplyr::in_schema("cds_cdm_02", "condition_occurrence")) %>% 
   collect() %>% 
   select(person_id, 
          condition_concept_id,
@@ -75,7 +76,7 @@ final_cohort_CR3 <- cohort_CR %>%
   spread(key = condition_concept_id, value = condition_status_source_value) #%>% select(-"<NA>") 
 
 
-observation <- tbl(con, dbplyr::in_schema("cds_cdm", "observation")) %>% 
+observation <- tbl(con, dbplyr::in_schema("cds_cdm_02", "observation")) %>% 
   collect() %>%
   select(person_id, 
          observation_concept_id,
@@ -89,7 +90,7 @@ final_cohort_CR2 <- cohort_CR %>%
   left_join(observation, by = 'person_id') %>%
   spread(key = observation_concept_id, value = value_as_number) 
 
-measurement <- tbl(con, dbplyr::in_schema("cds_cdm", "measurement")) %>% 
+measurement <- tbl(con, dbplyr::in_schema("cds_cdm_02", "measurement")) %>% 
   collect() %>%
   select(person_id,
          measurement_concept_id,
@@ -125,7 +126,7 @@ final_cohort <- final_cohort %>% filter(!is.na(`4014046`))
 final_cohort <- final_cohort %>% filter(!is.na(`44804077`))
 
 #impute NAs in the rest columns
-library(Hmisc)
+
 
 custom_impute_function <- function(df) {
   for (col in names(df)) {

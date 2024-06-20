@@ -1,14 +1,18 @@
-library(mlr3verse)
 library(mlr3)
+library(mlr3verse)
 library(dplyr)
 library(dbplyr)
 library(tidyr)
 library(ggplot2)
 library(mlr3learners)
 library(xgboost)
+library(readxl)
+library(tidyr)
 
 # dataset
 cohort <- read.csv("final_cohort.csv")
+
+#colnames(cohort)
 
 # Cohort: Complete remission
 cohort_cr <- cohort %>% select(-c(X4156363,  #EFSSTAT, RFSSTAT
@@ -45,8 +49,8 @@ RF_lrn = lrn("classif.ranger",
              importance = "impurity",
              predict_type = "prob", 
              max.depth = 17, 
-             seed = 12345 ,
-             mtry = as.integer(sqrt(length(task_cr$feature_names)))
+             seed = 12345 #,
+             #mtry = as.integer(sqrt(length(task_cr$feature_names)))
              )
 
 RF_tuner = auto_tuner(
@@ -58,8 +62,6 @@ RF_tuner = auto_tuner(
   terminator = terminator
 )
 
-
-
 RF_class = AutoFSelector$new(
   learner = RF_tuner,
   resampling = rsmp("holdout"),
@@ -68,7 +70,6 @@ RF_class = AutoFSelector$new(
   fselector = fselector
 )
 
-#lrForest = lrn("classif.ranger", importance = "impurity")
 RF_class$train(task_cr, row_ids = train_set_cr)
 RF_pred_train = RF_class$predict(task_cr, row_ids = train_set_cr)
 RF_pred_test = RF_class$predict(task_cr, row_ids=test_set_cr)
@@ -83,7 +84,24 @@ RF_pred_test$score(measures)
 # imporant features 
 variab_filter = flt("importance", learner = RF_lrn)
 variab_filter$calculate(task_cr)
-head(as.data.table(variab_filter), 10)
+Important_features_CR = head(as.data.table(variab_filter), 15)
+
+mapping_sheet <- read_excel("20240122_Mappings_sal.xlsx", sheet = "Mappings")
+
+Important_features_CR$Concept_name <- sapply(Important_features_CR$feature, function(feature) {
+  cleaned_feature <- gsub("^X", "", feature)
+  match_idx <- which(mapping_sheet$Concept_id == cleaned_feature)
+  
+    if (length(match_idx) > 0) {
+    return(mapping_sheet$Concept_name[match_idx])
+  } else {
+    return(NA)
+  }
+})
+
+
+
+
 
 ### MODEL:Single classification tree from package rpart.
 #learner2 = lrn("classif.rpart")
@@ -142,7 +160,7 @@ svm_pred_test$confusion
 svm_pred_train$score(measures)
 svm_pred_test$score(measures)
 
-# Define a custom print function with comments
+# Print the feature importance
 print_model_performance <- function(model_name, pred_train, pred_test, measures) {
   cat("Model:", model_name, "\n")
   
@@ -159,12 +177,7 @@ print_model_performance("Random Forest", RF_pred_train, RF_pred_test, measures)
 print_model_performance("Decision Tree", tree_pred_train, tree_pred_test, measures)
 print_model_performance("Gradient Boosting", gboost_pred_train, gboost_pred_test, measures)
 print_model_performance("Support-Vector Machines", svm_pred_train, svm_pred_test, measures)
-
-
-
-
-
-
+print(Important_features_CR)
 
 
 
