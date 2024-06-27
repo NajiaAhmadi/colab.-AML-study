@@ -24,7 +24,6 @@ tryCatch({
   ParallelLogger::logError("Connection details:", db_info)
 })
 
-#---------------------------------- TTRUNCATE CASCADE if necessary
 
 tryCatch({
   dbBegin(con)
@@ -43,7 +42,6 @@ tryCatch({
 input_data <- read.csv("20240116_sal_ohsu_data_OS2.csv")
 mapping <- read_excel("20240122_Mappings_sal.xlsx", sheet = "Mappings")
 
-#---------------------------------- PERSON table
 male_concept_id <- 442985
 female_concept_id <- 442986
 

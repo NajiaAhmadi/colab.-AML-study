@@ -217,7 +217,7 @@ vertical_table_Measurement_nonBinary_string <- na.omit(vertical_table_Measuremen
 print(vertical_table_Measurement_nonBinary_string)
 
 # query the patient ids from person table
-get_person_id <- function(con, patient_id) {
+get_person_id <- function(con, patient_id)
   query <- glue::glue("
     SELECT person_id FROM cds_cdm_02.person WHERE person_source_value = '{patient_id}';
   ")
@@ -229,7 +229,6 @@ get_person_id <- function(con, patient_id) {
   }
   
   return(result$person_id)
-}
 
 for (i in 1:nrow(vertical_table_Measurement_nonBinary_string)) {
   

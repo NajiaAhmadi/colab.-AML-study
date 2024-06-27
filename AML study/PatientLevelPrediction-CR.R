@@ -25,10 +25,11 @@ cohort_cr <- cohort %>% select(-c(X4156363,  #EFSSTAT, RFSSTAT
 # target column as factor
 cohort_cr$X4014046 = as.factor(cohort_cr$X4014046)
 #----------------------------------------------------------------- classification models
-# classification task
+
+# definition of the classification task 
 task_cr = as_task_classif(cohort_cr, target = 'X4014046')
 
-# train/test split
+# train/test split definition
 train_set_cr = sample(task_cr$row_ids, 0.67 * task_cr$nrow)
 test_set_cr = setdiff(task_cr$row_ids, train_set_cr)
 
@@ -72,16 +73,19 @@ RF_class = AutoFSelector$new(
 
 RF_class$train(task_cr, row_ids = train_set_cr)
 RF_pred_train = RF_class$predict(task_cr, row_ids = train_set_cr)
+
+# ------------------------------------------------------------------RF model test START
 RF_pred_test = RF_class$predict(task_cr, row_ids=test_set_cr)
+# ------------------------------------------------------------------RF model test END
 
 #RF_pred_train$confusion
 #RF_pred_test$confusion
-#RF_pred_train$score(measures)
+RF_pred_train$score(measures)
 RF_pred_test$score(measures)
 #RF_pred_test$prob
 #RF_pred_train$response
 
-# imporant features 
+#--------------------------------------------------------------- important features START
 variab_filter = flt("importance", learner = RF_lrn)
 variab_filter$calculate(task_cr)
 Important_features_CR = head(as.data.table(variab_filter), 15)
@@ -99,7 +103,7 @@ Important_features_CR$Concept_name <- sapply(Important_features_CR$feature, func
   }
 })
 
-
+#--------------------------------------------------------------- important features END
 
 
 
@@ -131,7 +135,10 @@ tree_class = AutoFSelector$new(
 
 tree_class$train(task_cr, row_ids = train_set_cr)
 tree_pred_train = tree_class$predict(task_cr, row_ids=train_set_cr)
+
+# ------------------------------------------------------------------CT model test START
 tree_pred_test = tree_class$predict(task_cr, row_ids=test_set_cr)
+# ------------------------------------------------------------------CT model test END
 
 tree_pred_train$confusion
 tree_pred_test$confusion
@@ -142,7 +149,10 @@ tree_pred_test$score(measures)
 gboost_lrn = lrn("classif.xgboost", predict_type = "prob")
 gboost_lrn$train(task_cr, row_ids = train_set_cr)
 gboost_pred_train = gboost_lrn$predict(task_cr, row_ids=train_set_cr)
+
+# ------------------------------------------------------------------GBM model test START
 gboost_pred_test = gboost_lrn$predict(task_cr, row_ids=test_set_cr)
+# ------------------------------------------------------------------GBM model test END
 
 gboost_pred_train$confusion
 gboost_pred_test$confusion
@@ -153,7 +163,10 @@ gboost_pred_test$score(measures)
 svm_lrn = lrn("classif.svm", predict_type = "prob")
 svm_lrn$train(task_cr, row_ids = train_set_cr)
 svm_pred_train = svm_lrn$predict(task_cr, row_ids=train_set_cr)
+
+# ------------------------------------------------------------------SVM model test START
 svm_pred_test = svm_lrn$predict(task_cr, row_ids=test_set_cr)
+# ------------------------------------------------------------------SVM model test END
 
 svm_pred_train$confusion
 svm_pred_test$confusion
