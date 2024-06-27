@@ -105,8 +105,6 @@ Important_features_CR$Concept_name <- sapply(Important_features_CR$feature, func
 
 #--------------------------------------------------------------- important features END
 
-
-
 ### MODEL:Single classification tree from package rpart.
 #learner2 = lrn("classif.rpart")
 
