@@ -191,7 +191,7 @@ print_model_performance("Support-Vector Machines", svm_pred_train, svm_pred_test
 print(Important_features_OS)
 
 
-
+save.image(file = "AML study.RData")
 
 
 

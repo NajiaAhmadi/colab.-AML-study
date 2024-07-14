@@ -190,6 +190,9 @@ print_model_performance("Gradient Boosting", gboost_pred_train, gboost_pred_test
 print_model_performance("Support-Vector Machines", svm_pred_train, svm_pred_test, measures)
 print(Important_features_CR)
 
+save.image(file = "AML study.RData")
+
+
 
 
 
