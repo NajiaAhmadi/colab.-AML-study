@@ -7,17 +7,47 @@ library(ggplot2)
 library(mlr3learners)
 library(xgboost)
 library(e1071)
+library(mlr3learners)
+#install.packages("FSelector")
+library("FSelector")
+#install.packages("mlr3fselect")
+library(mlr3fselect)
+
+library(readxl)
 
 # dataset
 cohort <- read.csv("final_cohort.csv")
 
+
 # Cohort: Overall survival >= two years
+
 cohort_os <- cohort %>% select(-c(X4156363,  #EFSSTAT, RFSSTAT
                                   X37208123, #EFSTM
                                   X40483363, #RFSTM
                                   X40482950, #OSTM
                                   X4014046,  #CR1
-                                  person_id))
+                                  person_id,
+                                  # the following columns does not exist in the US data: remove from the train set as well. 
+                                  X37312067, #CEBPA
+                                  X40483363, #RFSTM
+                                  X35944932, #BCORL1
+                                  X35945674, #MYD88
+                                  X35948718, #SF3B1
+                                  X35950932, #FBXW7
+                                  X35954356, #CUX1
+                                  X35954738, #GATA1
+                                  X35954887, #ATRX
+                                  X35955105, #CBL
+                                  X35955125, #PTEN
+                                  X35955661, #KDM6A
+                                  X35955904, #IKZF1
+                                  X35956153, #FLT3 I/T/R
+                                  X35958935, #GATA
+                                  X35960677, #HRAS
+                                  X35963472, #CBLB
+                                  X35963556, #PDGFRA 
+                                  X35963775  #GNAS
+                                  ))
 
 # target column as factor
 #cohort_os$X44804077 = as.factor(cohort_os$X44804077)
@@ -192,9 +222,6 @@ print(Important_features_OS)
 
 
 save.image(file = "AML study.RData")
-
-
-
 
 
 
