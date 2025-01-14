@@ -127,7 +127,6 @@ final_cohort <- final_cohort %>% filter(!is.na(`44804077`))
 
 #impute NAs in the rest columns
 
-
 custom_impute_function <- function(df) {
   for (col in names(df)) {
     if (class(df[[col]]) == "character") {
